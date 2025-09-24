@@ -1,0 +1,4 @@
+- name: Apply iptables rules
+  ansible.builtin.shell: iptables-restore < /etc/iptables/rules.v4
+  become: true
+  listen: Apply iptables rules

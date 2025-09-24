@@ -1,0 +1,21 @@
+- name: Install iptables-persistent
+  apt:
+    name: iptables-persistent
+    state: present
+    update_cache: yes
+
+- name: Put iptables rules file
+  template:
+    src: rules.v4.j2
+    dest: /etc/iptables/rules.v4
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - Apply iptables rules
+
+- name: Enable iptables-persistent service
+  systemd:
+    name: netfilter-persistent
+    enabled: yes
+    state: started

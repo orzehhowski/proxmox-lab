@@ -1,0 +1,4 @@
+- hosts: lab_s01_fw
+  become: true
+  roles:
+    - iptables
