@@ -14,8 +14,9 @@
   notify:
     - Apply iptables rules
 
-- name: Enable iptables-persistent service
+- name: Ensure the iptables-persistent service is running
   systemd:
     name: netfilter-persistent
     enabled: yes
     state: started
+  become: true
