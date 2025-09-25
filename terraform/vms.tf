@@ -24,4 +24,35 @@ resource "proxmox_lxc" "LAB-S01-FW" {
     size = "8G"
     storage = "TestDir"
   }
+  network {
+    name   = "eth0"
+    bridge = "vmbr0"
+    ip     = "10.120.69.2/28"
+    gw     = "10.120.69.1"
+  }
+  network {
+    name   = "eth1"
+    bridge = "vmbr1"
+    ip     = "10.120.69.17/28"
+  }
+  network {
+    name   = "eth2"
+    bridge = "vmbr2_MGMT"
+    ip     = "10.120.69.33/28"
+  }
+  network {
+    name   = "eth3"
+    bridge = "vmbr3"
+    ip     = "10.120.69.49/28"
+  }
+  network {
+    name   = "eth5"
+    bridge = "vmbr5_LAN"
+    ip     = "10.120.69.81/28"
+  }
+  network {
+    name   = "eth6"
+    bridge = "vmbr6_WiFi"
+    ip     = "10.120.69.97/28"
+  }
 }

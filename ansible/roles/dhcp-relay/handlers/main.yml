@@ -1,0 +1,7 @@
+- name: Restart isc-dhcp-relay service
+  systemd:
+    name: isc-dhcp-relay
+    enabled: yes
+    state: restarted
+  become: true
+  listen: Restart isc-dhcp-relay service

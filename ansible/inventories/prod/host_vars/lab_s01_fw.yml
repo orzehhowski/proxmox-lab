@@ -37,3 +37,6 @@ iptables_rules: |
   :OUTPUT ACCEPT [1315:407279]
   :POSTROUTING ACCEPT [61116:5339278]
   COMMIT
+
+dhcp_relay_interfaces: "eth1 eth5 eth6"
+dhcp_relay_options: ""

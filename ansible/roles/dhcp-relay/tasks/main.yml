@@ -1,0 +1,22 @@
+- name: Install isc-dhcp-relay
+  apt:
+    name: isc-dhcp-relay
+    state: present
+    update_cache: yes
+
+- name: Put isc-dhcp-relay config file
+  template:
+    src: isc-dhcp-relay.j2
+    dest: /etc/default/isc-dhcp-relay
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - Restart isc-dhcp-relay service
+
+
+- name: Ensure the isc-dhcp-relay service is running
+  service:
+    name: isc-dhcp-relay
+    state: started
+  become: true
