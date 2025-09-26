@@ -6,6 +6,7 @@ resource "proxmox_lxc" "LAB-S01-FW" {
   cores = 2
   hostname = "LAB-S01-FW"
   memory = 1024
+  ostemplate = "local:vztmpl/ubuntu-20.04-standard_20.04-1_amd64.tar.gz"
   ostype = "ubuntu"
   restore = false
   force = false
@@ -24,6 +25,7 @@ resource "proxmox_lxc" "LAB-S01-FW" {
     size = "8G"
     storage = "TestDir"
   }
+  ssh_public_keys = var.ssh_public_key
   network {
     name   = "eth0"
     bridge = "vmbr0"
