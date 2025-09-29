@@ -8,6 +8,7 @@ resource "proxmox_lxc" "LAB-S01-FW" {
   memory = 1024
   ostemplate = "local:vztmpl/ubuntu-20.04-standard_20.04-1_amd64.tar.gz"
   ostype = "ubuntu"
+  password = var.recovery_password
   restore = false
   force = false
   ignore_unpack_errors = false

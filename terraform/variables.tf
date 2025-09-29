@@ -23,3 +23,8 @@ variable "ssh_public_key" {
   description = "SSH public key"
   type        = string
 }
+
+variable "recovery_password" {
+  description = "root recovery password"
+  type        = string
+}

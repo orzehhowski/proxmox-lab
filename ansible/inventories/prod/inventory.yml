@@ -1,5 +1,5 @@
 servers:
   hosts:
     lab_s01_fw:
-      ansible_host: 10.120.69.2
+      ansible_host: 10.120.69.17
       ansible_user: root
