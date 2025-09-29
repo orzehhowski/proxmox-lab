@@ -1,22 +1,27 @@
 resource "proxmox_lxc" "LAB-S01-FW" {
   vmid        = 100
   target_node = var.node
-  bwlimit = 0
-  cmode = "tty"
-  cores = 2
   hostname = "LAB-S01-FW"
-  memory = 1024
   ostemplate = "local:vztmpl/ubuntu-20.04-standard_20.04-1_amd64.tar.gz"
   ostype = "ubuntu"
   password = var.recovery_password
+  ssh_public_keys = var.ssh_public_key
+  depends_on = [ proxmox_lxc.LAB-S02-Proxy ]
+
+  memory = 1024
+  cores = 4
+  swap = 512
+
+  bwlimit = 0
+  cmode = "tty"
   restore = false
   force = false
   ignore_unpack_errors = false
   start = true
   template = false
   unique = false
-  swap = 512
   unprivileged = true
+
   rootfs {
     acl = false
     quota = false 
@@ -26,7 +31,7 @@ resource "proxmox_lxc" "LAB-S01-FW" {
     size = "8G"
     storage = "TestDir"
   }
-  ssh_public_keys = var.ssh_public_key
+  
   network {
     name   = "eth0"
     bridge = "vmbr0"
@@ -57,5 +62,46 @@ resource "proxmox_lxc" "LAB-S01-FW" {
     name   = "eth6"
     bridge = "vmbr6_WiFi"
     ip     = "10.120.69.97/28"
+  }
+}
+
+resource "proxmox_lxc" "LAB-S02-Proxy" {
+  vmid        = 101
+  target_node = var.node
+  hostname = "LAB-S02-Proxy"
+  ostemplate = "local:vztmpl/ubuntu-20.04-standard_20.04-1_amd64.tar.gz"
+  ostype = "ubuntu"
+  password = var.recovery_password
+  ssh_public_keys = var.ssh_public_key
+
+  memory = 2024
+  cores = 2
+  swap = 512
+
+  bwlimit = 0
+  cmode = "tty"
+  restore = false
+  force = false
+  ignore_unpack_errors = false
+  start = true
+  template = false
+  unique = false
+  unprivileged = true
+
+  rootfs {
+    acl = false
+    quota = false 
+    replicate = false
+    ro = false
+    shared = false
+    size = "32G"
+    storage = "TestDir"
+  }
+
+  network {
+    name   = "eth0"
+    bridge = "vmbr0"
+    ip     = "10.120.69.5/28"
+    gw     = "10.120.69.1"
   }
 }
