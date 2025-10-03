@@ -3,3 +3,6 @@ servers:
     lab_s01_fw:
       ansible_host: 10.120.69.17
       ansible_user: root
+    lab_s02_proxy:
+      ansible_host: 10.120.69.5
+      ansible_user: root

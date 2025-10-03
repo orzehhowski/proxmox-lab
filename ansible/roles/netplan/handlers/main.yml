@@ -1,0 +1,5 @@
+- name: Apply network settings
+  ansible.builtin.shell: netplan apply
+  async: 10
+  poll: 0
+  listen: Apply network settings

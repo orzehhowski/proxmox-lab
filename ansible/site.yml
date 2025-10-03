@@ -3,3 +3,8 @@
   roles:
     - iptables
     - dhcp-relay
+
+- hosts: lab_s02_proxy
+  become: true
+  roles:
+    - netplan

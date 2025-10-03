@@ -1,0 +1,26 @@
+- name: Ensure netplan package is installed
+  ansible.builtin.package:
+    name: netplan.io
+    state: present
+
+- name: Ensure /etc/netplan directory exists
+  ansible.builtin.file:
+    path: /etc/netplan
+    state: directory
+    mode: 0755
+
+- name: Verify netplan binary exists
+  ansible.builtin.command: which netplan
+  register: netplan_bin
+  changed_when: false
+  failed_when: netplan_bin.rc != 0
+
+- name: Put network config file
+  template:
+    src: 01-netconfig.yaml.j2
+    dest: /etc/netplan/01-netconfig.yaml
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - Apply network settings
