@@ -1,3 +1,9 @@
+use_ddns: true
+ddns_key_name: dhcpupdate.
+ddns_port: 53001
+ddns_ip: 10.120.69.18
+ddns_key: "{{ vault_ddns_key }}"
+
 dhcp4_interfaces_config: |
   "interfaces": ["eth0"]
 
@@ -50,6 +56,18 @@ dhcp4_subnets: |
     ]
   }
 
+dhcp4_ddns: |
+  "enable-updates": true,
+  "server-ip": "10.120.69.18",
+  "server-port": {{ ddns_port }},
+  "sender-ip": "10.120.69.18",
+  "sender-port": 0,
+  "max-queue-size": 1024,
+  "ncr-protocol": "UDP",
+  "ncr-format": "JSON",
+  "qualifying-suffix": "local.orzehhowski.pl",
+  "override-client-update": true
+
 dhcp4_loggers: |
   {
     "name": "kea-dhcp4",
@@ -61,4 +79,57 @@ dhcp4_loggers: |
     ],
     "severity": "INFO",
     "debuglevel": 0
+  }
+
+bind_options: |
+  directory "/var/cache/bind";
+
+  recursion yes;
+  allow-recursion { 10.120.69.0/24; localhost; };
+
+  forwarders {
+    8.8.8.8;
+    8.8.4.4;
+  };
+
+  dnssec-validation auto;
+
+  listen-on { 127.0.0.1; 10.120.69.18; };
+
+bind_zones: |
+  zone "local.orzehhowski.pl" {
+    type master;
+    file "/var/lib/bind/db.local.orzehhowski.pl";
+    allow-update { key "{{ ddns_key_name }}"; };
+  };
+
+  zone "69.120.10.in-addr.arpa" {
+    type master;
+    file "/var/lib/bind/db.10";
+    allow-update { key "{{ ddns_key_name }}"; };
+  };
+
+ddns_forward_domains: |
+  {
+    "name": "local.orzehhowski.pl.",
+    "key-name": "{{ ddns_key_name }}",
+    "dns-servers": [
+      { "ip-address": "10.120.69.18", "port": 53 }
+    ]
+  }
+
+ddns_reverse_domains: |
+  {
+    "name": "69.120.10.in-addr.arpa.",
+    "key-name": "{{ ddns_key_name }}",
+    "dns-servers": [
+      { "ip-address": "10.120.69.18", "port": 53 }
+    ]
+  }
+
+ddns_tsig_keys: |
+  {
+    "name": "{{ ddns_key_name }}",
+    "algorithm": "hmac-sha256",
+    "secret": "{{ ddns_key }}"
   }

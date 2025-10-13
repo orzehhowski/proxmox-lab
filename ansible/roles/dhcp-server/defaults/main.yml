@@ -32,6 +32,18 @@ dhcp4_subnets: |
     ]
   }
 
+dhcp4_ddns: |
+  "enable-updates": true,
+  "server-ip": "10.120.69.18",
+  "server-port": 53001,
+  "sender-ip": "10.120.69.18",
+  "sender-port": 0,
+  "max-queue-size": 1024,
+  "ncr-protocol": "UDP",
+  "ncr-format": "JSON",
+  "qualifying-suffix": "local.orzehhowski.pl",
+  "override-client-update": true
+
 dhcp4_loggers: |
   {
     "name": "kea-dhcp4",

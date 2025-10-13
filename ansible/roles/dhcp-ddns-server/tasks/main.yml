@@ -1,0 +1,21 @@
+- name: Install kea-dhcp4-ddns
+  apt:
+    name: kea-dhcp-ddns-server
+    state: present
+    update_cache: yes
+
+- name: Put dhcp-ddns config file
+  template:
+    src: kea-dhcp-ddns.conf.j2
+    dest: /etc/kea/kea-dhcp-ddns.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - Restart kea-dhcp-ddns-server service
+
+- name: Ensure the kea-dhcp-ddns-server service is running
+  systemd:
+    name: kea-dhcp-ddns-server
+    state: started
+  become: true

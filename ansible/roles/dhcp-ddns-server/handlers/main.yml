@@ -1,0 +1,7 @@
+- name: Restart kea-dhcp-ddns-server service
+  systemd:
+    name: kea-dhcp-ddns-server
+    enabled: yes
+    state: restarted
+  become: true
+  listen: Restart kea-dhcp-ddns-server service
