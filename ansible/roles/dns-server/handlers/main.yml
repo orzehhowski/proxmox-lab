@@ -1,0 +1,7 @@
+- name: Restart named service
+  systemd:
+    name: named
+    enabled: yes
+    state: restarted
+  become: true
+  listen: Restart named service

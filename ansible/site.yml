@@ -16,3 +16,4 @@
   roles:
     - apt-proxy-client
     - dhcp-server
+    - dns-server

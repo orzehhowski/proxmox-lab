@@ -1,0 +1,32 @@
+
+use_ddns: false
+ddns_key_name: dhcpupdate.
+
+bind_options: |
+  directory "/var/cache/bind";
+
+  recursion yes;
+  allow-recursion { 10.120.69.0/24; localhost; };
+
+  forwarders {
+    8.8.8.8;
+    8.8.4.4;
+  };
+
+  dnssec-validation auto;
+
+  listen-on { 127.0.0.1; 10.120.69.18; };
+
+bind_zones: |
+  zone "local.orzehhowski.pl" {
+    type master;
+    file "/var/lib/bind/db.local.orzehhowski.pl";
+    allow-update { key "{{ ddns_key_name }}"; };
+  };
+
+  zone "69.120.10.in-addr.arpa" {
+    type master;
+    file "/var/lib/bind/db.10";
+    allow-update { key "{{ ddns_key_name }}"; };
+  };
+

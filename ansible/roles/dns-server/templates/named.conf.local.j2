@@ -1,0 +1,6 @@
+key "{{ ddns_key_name }}" {
+	algorithm hmac-sha256;
+	secret "{{ ddns_key }}";
+};
+
+{{ bind_zones }}
