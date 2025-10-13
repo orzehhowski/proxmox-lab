@@ -1,0 +1,1 @@
+ddns_key: {{ vault_ddns_key }}
