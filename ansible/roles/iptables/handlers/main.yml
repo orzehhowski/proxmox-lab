@@ -2,3 +2,8 @@
   ansible.builtin.shell: iptables-restore < /etc/iptables/rules.v4
   become: true
   listen: Apply iptables rules
+
+- name: Save iptables rules
+  ansible.builtin.command: netfilter-persistent save
+  become: true
+  listen: Save iptables rules
