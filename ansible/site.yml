@@ -10,3 +10,9 @@
     - iptables
     - apt-proxy-client
     - dhcp-relay
+
+- hosts: lab_s03_dhcp_dns
+  become: true
+  roles:
+    - apt-proxy-client
+    - dhcp-server

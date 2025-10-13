@@ -1,0 +1,64 @@
+dhcp4_interfaces_config: |
+  "interfaces": ["eth0"]
+
+dhcp4_lease_database: | 
+  "type": "memfile",
+  "persist": true,
+  "name": "/var/lib/kea/dhcp4.leases"
+
+dhcp4_option_data: |
+  {
+    "name": "domain-name-servers",
+    "data": "10.120.69.18"
+  },
+  {
+    "name": "domain-name",
+    "data": "local.orzehhowski.pl"
+  },
+  {
+    "name": "domain-search",
+    "data": "local.orzehhowski.pl, orzehhowski.pl"
+  }
+
+dhcp4_subnets: |
+  {
+    "subnet": "10.120.69.80/28",
+    "pools": [ { "pool": "10.120.69.82 - 10.120.69.90" } ],
+    "option-data": [
+      {
+        "name": "routers",
+        "data": "10.120.69.81"
+      },
+      {
+        "name": "domain-name-servers",
+        "data": "10.120.69.18"
+      }
+    ]
+  },
+  {
+    "subnet": "10.120.69.96/28",
+    "pools": [ { "pool": "10.120.69.100 - 10.120.69.105" } ],
+    "option-data": [
+      {
+        "name": "routers",
+        "data": "10.120.69.97"
+      },
+      {
+        "name": "domain-name-servers",
+        "data": "10.120.69.18"
+      }
+    ]
+  }
+
+dhcp4_loggers: |
+  {
+    "name": "kea-dhcp4",
+    "output_options": [
+      {
+        "output": "/var/log/kea/kea-dhcp4.log",
+        "maxver": 8
+      }
+    ],
+    "severity": "INFO",
+    "debuglevel": 0
+  }

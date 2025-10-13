@@ -1,0 +1,21 @@
+- name: Install kea-dhcp4-server
+  apt:
+    name: kea-dhcp4-server
+    state: present
+    update_cache: yes
+
+- name: Put dhcp4 config file
+  template:
+    src: kea-dhcp4.conf.j2
+    dest: /etc/kea/kea-dhcp4.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - Restart kea-dhcp4-server service
+
+- name: Ensure the kea-dhcp4-server service is running
+  systemd:
+    name: kea-dhcp4-server
+    state: started
+  become: true

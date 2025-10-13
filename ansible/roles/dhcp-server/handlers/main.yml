@@ -1,0 +1,7 @@
+- name: Restart kea-dhcp4-server service
+  systemd:
+    name: kea-dhcp4-server
+    enabled: yes
+    state: restarted
+  become: true
+  listen: Restart kea-dhcp4-server service
