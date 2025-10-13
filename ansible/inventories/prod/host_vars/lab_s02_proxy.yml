@@ -10,3 +10,14 @@ interfaces:
         via: 10.120.69.2
       - to: 10.120.69.32/28
         via: 10.120.69.2
+
+squid:
+  port: 3142
+  acl:
+    - { name: management, src: 10.120.69.32/28 }
+    - { name: servers, src: 10.120.69.16/28 }
+    - { name: dmz-firewall, src: 10.120.69.2  }
+  logs:
+    access_log: /var/log/squid/access.log
+    cache_log: /var/log/squid/cache.log
+    pid_filename: /var/run/squid.pid

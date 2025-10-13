@@ -1,0 +1,8 @@
+squid:
+  port: 3142
+  acl:
+    - { name: network, src: 192.168.1.0/24 }
+  logs:
+    access_log: /var/log/squid/access.log
+    cache_log: /var/log/squid/cache.log
+    pid_filename: /var/run/squid.pid

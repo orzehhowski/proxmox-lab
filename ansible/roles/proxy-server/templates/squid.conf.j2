@@ -1,0 +1,13 @@
+{% for acl in squid.acl %}
+acl {{ acl.name }} src {{ acl.src }}
+{% endfor %}
+{% for acl in squid.acl %}
+http_access allow {{ acl.name }}
+{% endfor %}
+http_access deny all
+
+http_port {{ squid.port }}
+
+access_log {{ squid.logs.access_log }}
+cache_log {{ squid.logs.cache_log }}
+pid_filename {{ squid.logs.pid_filename }}

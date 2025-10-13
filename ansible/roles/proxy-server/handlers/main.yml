@@ -1,0 +1,7 @@
+- name: Restart squid service
+  systemd:
+    name: squid
+    enabled: yes
+    state: restarted
+  become: true
+  listen: Restart squid service

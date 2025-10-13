@@ -1,10 +1,12 @@
-- hosts: lab_s01_fw
-  become: true
-  roles:
-    - iptables
-    - dhcp-relay
-
 - hosts: lab_s02_proxy
   become: true
   roles:
     - netplan
+    - proxy-server
+
+- hosts: lab_s01_fw
+  become: true
+  roles:
+    - iptables
+    - apt-proxy-client
+    - dhcp-relay

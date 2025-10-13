@@ -1,0 +1,33 @@
+- name: Install squid
+  apt:
+    name: squid
+    state: present
+    update_cache: yes
+
+- name: Put squid config file
+  template:
+    src: squid.conf.j2
+    dest: /etc/squid/squid.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - Restart squid service
+
+- name: Ensure log directory exists
+  file:
+    path: "{{ item | dirname }}"
+    state: directory
+    owner: proxy
+    group: proxy
+    mode: 0755
+  loop:
+    - "{{ squid.logs.access_log }}"
+    - "{{ squid.logs.cache_log }}"
+
+
+- name: Ensure the squid service is running
+  service:
+    name: squid
+    state: started
+  become: true
