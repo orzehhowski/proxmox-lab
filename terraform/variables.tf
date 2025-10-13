@@ -27,4 +27,5 @@ variable "ssh_public_key" {
 variable "recovery_password" {
   description = "root recovery password"
   type        = string
+  sensitive   = true
 }

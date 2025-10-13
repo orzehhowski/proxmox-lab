@@ -1,3 +1,5 @@
+# These are machines in DMZ network subnet - 10.120.69.0/28
+
 resource "proxmox_lxc" "LAB-S01-FW" {
   vmid        = 100
   target_node = var.node
@@ -74,7 +76,7 @@ resource "proxmox_lxc" "LAB-S02-Proxy" {
   password = var.recovery_password
   ssh_public_keys = var.ssh_public_key
 
-  memory = 2024
+  memory = 2048
   cores = 2
   swap = 512
 
