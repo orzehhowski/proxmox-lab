@@ -25,9 +25,20 @@
     - "{{ squid.logs.access_log }}"
     - "{{ squid.logs.cache_log }}"
 
-
 - name: Ensure the squid service is running
-  service:
-    name: squid
-    state: started
   become: true
+  block:
+    - name: Start squid service
+      systemd:
+        name: squid
+        state: started
+
+    - name: Wait 3 seconds for service to settle
+      pause:
+        seconds: 3
+
+    - name: Verify squid is active
+      command: systemctl is-active squid
+      register: process_status
+      changed_when: false
+      failed_when: process_status.stdout.strip() != "active"

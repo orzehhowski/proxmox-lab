@@ -15,7 +15,19 @@
     - Restart kea-dhcp4-server service
 
 - name: Ensure the kea-dhcp4-server service is running
-  systemd:
-    name: kea-dhcp4-server
-    state: started
   become: true
+  block:
+    - name: Start kea-dhcp4-server service
+      systemd:
+        name: kea-dhcp4-server
+        state: started
+
+    - name: Wait 3 seconds for service to settle
+      pause:
+        seconds: 3
+
+    - name: Verify kea-dhcp4-server is active
+      command: systemctl is-active kea-dhcp4-server
+      register: process_status
+      changed_when: false
+      failed_when: process_status.stdout.strip() != "active"

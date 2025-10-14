@@ -14,9 +14,20 @@
   notify:
     - Restart isc-dhcp-relay service
 
-
 - name: Ensure the isc-dhcp-relay service is running
-  service:
-    name: isc-dhcp-relay
-    state: started
   become: true
+  block:
+    - name: Start isc-dhcp-relay service
+      systemd:
+        name: isc-dhcp-relay
+        state: started
+
+    - name: Wait 3 seconds for service to settle
+      pause:
+        seconds: 3
+
+    - name: Verify isc-dhcp-relay is active
+      command: systemctl is-active isc-dhcp-relay
+      register: process_status
+      changed_when: false
+      failed_when: process_status.stdout.strip() != "active"
