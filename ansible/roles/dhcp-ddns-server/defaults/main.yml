@@ -1,27 +1,29 @@
-ddns_port: 53001
-ddns_ip: 10.120.69.18
+ddns:
+  port: 53001
+  server_ip: 10.120.69.18
 
-ddns_tsig_keys: |
-  {
-    "name": "dhcpupdate.",
-    "algorithm": "hmac-sha256",
-    "secret": ""
-  }
+ddns_renders:
+  tsig_keys: |
+    {
+      "name": "dhcpupdate.",
+      "algorithm": "hmac-sha256",
+      "secret": ""
+    }
 
-ddns_forward_domains: |
-  {
-    "name": "local.orzehhowski.pl.",
-    "key-name": "dhcpupdate.",
-    "dns-servers": [
-      { "ip-address": "10.120.69.18", "port": 53 }
-    ]
-  }
+  forward_domains: |
+    {
+      "name": "local.orzehhowski.pl.",
+      "key-name": "dhcpupdate.",
+      "dns-servers": [
+        { "ip-address": "10.120.69.18", "port": 53 }
+      ]
+    }
 
-ddns_reverse_domains: |
-  {
-    "name": "69.120.10.in-addr.arpa.",
-    "key-name": "dhcpupdate.",
-    "dns-servers": [
-      { "ip-address": "10.120.69.18", "port": 53 }
-    ]
-  }
+  reverse_domains: |
+    {
+      "name": "69.120.10.in-addr.arpa.",
+      "key-name": "dhcpupdate.",
+      "dns-servers": [
+        { "ip-address": "10.120.69.18", "port": 53 }
+      ]
+    }

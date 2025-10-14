@@ -1,135 +1,140 @@
-use_ddns: true
-ddns_key_name: dhcpupdate.
-ddns_port: 53001
-ddns_ip: 10.120.69.18
-ddns_key: "{{ vault_ddns_key }}"
+ddns: 
+  use: true
+  key_name: dhcpupdate.
+  key: "{{ vault_ddns_key }}"
+  port: 53001
+  server_ip: 10.120.69.18
 
-dhcp4_interfaces_config: |
-  "interfaces": ["eth0"]
+ddns_renders:
+  forward_domains: |
+    {
+      "name": "local.orzehhowski.pl.",
+      "key-name": "{{ ddns.key_name }}",
+      "dns-servers": [
+        { "ip-address": "10.120.69.18", "port": 53 }
+      ]
+    }
 
-dhcp4_lease_database: | 
-  "type": "memfile",
-  "persist": true,
-  "name": "/var/lib/kea/dhcp4.leases"
+  reverse_domains: |
+    {
+      "name": "69.120.10.in-addr.arpa.",
+      "key-name": "{{ ddns.key_name }}",
+      "dns-servers": [
+        { "ip-address": "10.120.69.18", "port": 53 }
+      ]
+    }
 
-dhcp4_option_data: |
-  {
-    "name": "domain-name-servers",
-    "data": "10.120.69.18"
-  },
-  {
-    "name": "domain-name",
-    "data": "local.orzehhowski.pl"
-  },
-  {
-    "name": "domain-search",
-    "data": "local.orzehhowski.pl, orzehhowski.pl"
-  }
+  tsig_keys: |
+    {
+      "name": "{{ ddns.key_name }}",
+      "algorithm": "hmac-sha256",
+      "secret": "{{ ddns.key }}"
+    }
 
-dhcp4_subnets: |
-  {
-    "subnet": "10.120.69.80/28",
-    "pools": [ { "pool": "10.120.69.82 - 10.120.69.90" } ],
-    "option-data": [
-      {
-        "name": "routers",
-        "data": "10.120.69.81"
-      },
-      {
-        "name": "domain-name-servers",
-        "data": "10.120.69.18"
-      }
-    ]
-  },
-  {
-    "subnet": "10.120.69.96/28",
-    "pools": [ { "pool": "10.120.69.100 - 10.120.69.105" } ],
-    "option-data": [
-      {
-        "name": "routers",
-        "data": "10.120.69.97"
-      },
-      {
-        "name": "domain-name-servers",
-        "data": "10.120.69.18"
-      }
-    ]
-  }
+dhcp4_renders:
+  interfaces_config: |
+    "interfaces": ["eth0"]
 
-dhcp4_ddns: |
-  "enable-updates": true,
-  "server-ip": "10.120.69.18",
-  "server-port": {{ ddns_port }},
-  "sender-ip": "10.120.69.18",
-  "sender-port": 0,
-  "max-queue-size": 1024,
-  "ncr-protocol": "UDP",
-  "ncr-format": "JSON",
-  "qualifying-suffix": "local.orzehhowski.pl",
-  "override-client-update": true
+  lease_database: | 
+    "type": "memfile",
+    "persist": true,
+    "name": "/var/lib/kea/dhcp4.leases"
 
-dhcp4_loggers: |
-  {
-    "name": "kea-dhcp4",
-    "output_options": [
-      {
-        "output": "/var/log/kea/kea-dhcp4.log",
-        "maxver": 8
-      }
-    ],
-    "severity": "INFO",
-    "debuglevel": 0
-  }
+  option_data: |
+    {
+      "name": "domain-name-servers",
+      "data": "10.120.69.18"
+    },
+    {
+      "name": "domain-name",
+      "data": "local.orzehhowski.pl"
+    },
+    {
+      "name": "domain-search",
+      "data": "local.orzehhowski.pl, orzehhowski.pl"
+    }
 
-bind_options: |
-  directory "/var/cache/bind";
+  subnets: |
+    {
+      "subnet": "10.120.69.80/28",
+      "pools": [ { "pool": "10.120.69.82 - 10.120.69.90" } ],
+      "option-data": [
+        {
+          "name": "routers",
+          "data": "10.120.69.81"
+        },
+        {
+          "name": "domain-name-servers",
+          "data": "10.120.69.18"
+        }
+      ]
+    },
+    {
+      "subnet": "10.120.69.96/28",
+      "pools": [ { "pool": "10.120.69.100 - 10.120.69.105" } ],
+      "option-data": [
+        {
+          "name": "routers",
+          "data": "10.120.69.97"
+        },
+        {
+          "name": "domain-name-servers",
+          "data": "10.120.69.18"
+        }
+      ]
+    }
 
-  recursion yes;
-  allow-recursion { 10.120.69.0/24; localhost; };
+  ddns: |
+    "enable-updates": true,
+    "server-ip": "10.120.69.18",
+    "server-port": {{ ddns.port }},
+    "sender-ip": "10.120.69.18",
+    "sender-port": 0,
+    "max-queue-size": 1024,
+    "ncr-protocol": "UDP",
+    "ncr-format": "JSON",
+    "qualifying-suffix": "local.orzehhowski.pl",
+    "override-client-update": true
 
-  forwarders {
-    8.8.8.8;
-    8.8.4.4;
-  };
+  loggers: |
+    {
+      "name": "kea-dhcp4",
+      "output_options": [
+        {
+          "output": "/var/log/kea/kea-dhcp4.log",
+          "maxver": 8
+        }
+      ],
+      "severity": "INFO",
+      "debuglevel": 0
+    }
 
-  dnssec-validation auto;
+bind9_renders:
+  options: |
+    directory "/var/cache/bind";
 
-  listen-on { 127.0.0.1; 10.120.69.18; };
+    recursion yes;
+    allow-recursion { 10.120.69.0/24; localhost; };
 
-bind_zones: |
-  zone "local.orzehhowski.pl" {
-    type master;
-    file "/var/lib/bind/db.local.orzehhowski.pl";
-    allow-update { key "{{ ddns_key_name }}"; };
-  };
+    forwarders {
+      8.8.8.8;
+      8.8.4.4;
+    };
 
-  zone "69.120.10.in-addr.arpa" {
-    type master;
-    file "/var/lib/bind/db.10";
-    allow-update { key "{{ ddns_key_name }}"; };
-  };
+    dnssec-validation auto;
 
-ddns_forward_domains: |
-  {
-    "name": "local.orzehhowski.pl.",
-    "key-name": "{{ ddns_key_name }}",
-    "dns-servers": [
-      { "ip-address": "10.120.69.18", "port": 53 }
-    ]
-  }
+    listen-on { 127.0.0.1; 10.120.69.18; };
 
-ddns_reverse_domains: |
-  {
-    "name": "69.120.10.in-addr.arpa.",
-    "key-name": "{{ ddns_key_name }}",
-    "dns-servers": [
-      { "ip-address": "10.120.69.18", "port": 53 }
-    ]
-  }
+  zones: |
+    zone "local.orzehhowski.pl" {
+      type master;
+      file "/var/lib/bind/db.local.orzehhowski.pl";
+      allow-update { key "{{ ddns.key_name }}"; };
+    };
 
-ddns_tsig_keys: |
-  {
-    "name": "{{ ddns_key_name }}",
-    "algorithm": "hmac-sha256",
-    "secret": "{{ ddns_key }}"
-  }
+    zone "69.120.10.in-addr.arpa" {
+      type master;
+      file "/var/lib/bind/db.10";
+      allow-update { key "{{ ddns.key_name }}"; };
+    };
+

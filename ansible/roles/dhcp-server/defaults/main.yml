@@ -1,58 +1,62 @@
-dhcp4_interfaces_config: |
-  "interfaces": ["eth0"]
+ddns:
+  use: false
 
-dhcp4_lease_database: | 
-  "type": "memfile",
-  "persist": true,
-  "name": "/var/lib/kea/dhcp4.leases"
+dhcp4_renders:
+  interfaces_config: |
+    "interfaces": ["eth0"]
 
-dhcp4_option_data: |
-  {
-    "name": "domain-name-servers",
-    "data": "localhost"
-  },
-  {
-    "name": "domain-name",
-    "data": "example.org"
-  }
+  lease_database: | 
+    "type": "memfile",
+    "persist": true,
+    "name": "/var/lib/kea/dhcp4.leases"
 
-dhcp4_subnets: |
-  {
-    "subnet": "10.120.69.0/24",
-    "pools": [ { "pool": "10.120.69.10 - 10.120.69.12" } ],
-    "option-data": [
-      {
-        "name": "routers",
-        "data": "10.120.69.1"
-      },
-      {
-        "name": "domain-name-servers",
-        "data": "localhost"
-      }
-    ]
-  }
+  option_data: |
+    {
+      "name": "domain-name-servers",
+      "data": "localhost"
+    },
+    {
+      "name": "domain-name",
+      "data": "example.org"
+    }
 
-dhcp4_ddns: |
-  "enable-updates": true,
-  "server-ip": "10.120.69.18",
-  "server-port": 53001,
-  "sender-ip": "10.120.69.18",
-  "sender-port": 0,
-  "max-queue-size": 1024,
-  "ncr-protocol": "UDP",
-  "ncr-format": "JSON",
-  "qualifying-suffix": "local.orzehhowski.pl",
-  "override-client-update": true
+  subnets: |
+    {
+      "subnet": "10.120.69.0/24",
+      "pools": [ { "pool": "10.120.69.10 - 10.120.69.12" } ],
+      "option-data": [
+        {
+          "name": "routers",
+          "data": "10.120.69.1"
+        },
+        {
+          "name": "domain-name-servers",
+          "data": "localhost"
+        }
+      ]
+    }
 
-dhcp4_loggers: |
-  {
-    "name": "kea-dhcp4",
-    "output_options": [
-      {
-        "output": "/var/log/kea/kea-dhcp4.log",
-        "maxver": 8
-      }
-    ],
-    "severity": "INFO",
-    "debuglevel": 0
-  }
+  ddns: |
+    "enable-updates": true,
+    "server-ip": "10.120.69.18",
+    "server-port": 53001,
+    "sender-ip": "10.120.69.18",
+    "sender-port": 0,
+    "max-queue-size": 1024,
+    "ncr-protocol": "UDP",
+    "ncr-format": "JSON",
+    "qualifying-suffix": "local.orzehhowski.pl",
+    "override-client-update": true
+
+  loggers: |
+    {
+      "name": "kea-dhcp4",
+      "output_options": [
+        {
+          "output": "/var/log/kea/kea-dhcp4.log",
+          "maxver": 8
+        }
+      ],
+      "severity": "INFO",
+      "debuglevel": 0
+    }

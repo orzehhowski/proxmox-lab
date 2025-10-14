@@ -1,1 +1,2 @@
-ddns_key: "{{ vault_ddns_key }}"
+ddns:
+  key: "{{ vault_ddns_key }}"

@@ -1,6 +1,8 @@
-key "{{ ddns_key_name }}" {
+{% if ddns.use %}
+key "{{ ddns.key_name }}" {
 	algorithm hmac-sha256;
-	secret "{{ ddns_key }}";
+	secret "{{ ddns.key }}";
 };
+{% endif %}
 
-{{ bind_zones }}
+{{ bind9_renders.zones }}

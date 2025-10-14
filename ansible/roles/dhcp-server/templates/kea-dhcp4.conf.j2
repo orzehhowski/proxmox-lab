@@ -1,14 +1,14 @@
 {
 "Dhcp4": {
     "interfaces-config": {
-         {{ dhcp4_interfaces_config }}
+         {{ dhcp4_renders.interfaces_config }}
     },
     "control-socket": {
         "socket-type": "unix",
         "socket-name": "/tmp/kea-dhcp4-ctrl.sock"
     },
     "lease-database": {
-        {{ dhcp4_lease_database }}
+        {{ dhcp4_renders.lease_database }}
     },
 
     "expired-leases-processing": {
@@ -31,18 +31,18 @@
             "name": "default-ip-ttl",
             "data": "0xf0"
         },
-        {{ dhcp4_option_data }}
+        {{ dhcp4_renders.option_data }}
     ],
     "subnet4": [
-        {{ dhcp4_subnets }}
+        {{ dhcp4_renders.subnets }}
     ],
-    {% if use_ddns %}
+    {% if ddns.use %}
 	"dhcp-ddns": {
-        {{ dhcp4_ddns }}
+        {{ dhcp4_renders.ddns }}
 	},
     {% endif %}
     "loggers": [
-        {{ dhcp4_loggers }}
+        {{ dhcp4_renders.loggers }}
   ]
 }
 }

@@ -2,23 +2,4 @@ network:
   version: 2
   renderer: networkd
   ethernets:
-{% for iface, params in interfaces.items() %}
-    {{ iface }}:
-{% for key, value in params.items() %}
-{% if value is iterable and value is not string %}
-      {{ key }}:
-{% for item in value %}
-{% if item is mapping %}
-        - {% for k, v in item.items() %}{{ k }}: {{ v }}{% if not loop.last %}
-        
-          {% endif %}{% endfor %}
-
-{% else %}
-        - {{ item }}
-{% endif %}
-{% endfor %}
-{% else %}
-      {{ key }}: {{ value }}
-{% endif %}
-{% endfor %}
-{% endfor %}
+    {{ netplan_renders.ethernets | indent(4) }}

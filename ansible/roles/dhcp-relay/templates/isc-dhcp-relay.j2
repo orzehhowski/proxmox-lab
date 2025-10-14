@@ -1,8 +1,8 @@
 # What servers should the DHCP relay forward requests to?
-SERVERS="{{ dhcp_server_ip }}"
+SERVERS="{{ dhcp.server_ip }}"
 
 # On what interfaces should the DHCP relay (dhrelay) serve DHCP requests?
-INTERFACES="{{ dhcp_relay_interfaces }}"
+INTERFACES="{{ dhcp_relay.interfaces }}"
 
 # Additional options that are passed to the DHCP relay daemon?
-OPTIONS="{{ dhcp_relay_options }}"
+OPTIONS="{{ dhcp_relay.options }}"
