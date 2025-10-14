@@ -11,13 +11,31 @@
     state: present
     update_cache: yes
 
-- name: Put iptables rules file
+- name: Generate iptables rules to temp file
   template:
     src: rules.v4.j2
+    dest: /tmp/rules.v4.new
+  check_mode: no
+
+- name: Save old iptables rules to temp file
+  ansible.builtin.shell: iptables-save | grep -vE '^(#|:.*\[)' > /tmp/rules.v4.old
+  changed_when: false
+
+- name: Check if rules changed
+  command: diff /tmp/rules.v4.old /tmp/rules.v4.new
+  register: iptables_diff
+  failed_when: iptables_diff.rc not in [0, 1]
+  changed_when: iptables_diff.rc == 1
+
+- name: Copy new rules if differences exist
+  copy:
+    src: /tmp/rules.v4.new
+    remote_src: true
     dest: /etc/iptables/rules.v4
     owner: root
     group: root
     mode: 0644
+  when: iptables_diff.rc != 0
   notify:
     - Apply iptables rules
     - Save iptables rules

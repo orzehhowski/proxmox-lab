@@ -1,4 +1,7 @@
 iptables_renders:
-  filter_rules: |
-    -A FORWARD -m state --state RELATED,ESTABLISHED -m comment --comment allow-existing-connections -j ACCEPT
-    -A FORWARD -j ACCEPT
+  filter:
+    input: |
+      -A INPUT -j ACCEPT
+    forward: |
+      -A FORWARD -m state --state RELATED,ESTABLISHED -m comment --comment allow-existing-connections -j ACCEPT
+      -A FORWARD -j ACCEPT
