@@ -25,19 +25,7 @@
     - Restart named service
 
 - name: Ensure the named service is running
-  become: true
-  block:
-    - name: Start named service
-      systemd:
-        name: named
-        state: started
-
-    - name: Wait 3 seconds for service to settle
-      pause:
-        seconds: 3
-
-    - name: Verify named is active
-      command: systemctl is-active named
-      register: process_status
-      changed_when: false
-      failed_when: process_status.stdout.strip() != "active"
+  include_tasks: tasks/start_and_check_service.yml
+  vars:
+    service_name: named
+    

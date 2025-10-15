@@ -15,19 +15,6 @@
     - Restart kea-dhcp-ddns-server service
 
 - name: Ensure the kea-dhcp-ddns-server service is running
-  become: true
-  block:
-    - name: Start kea-dhcp-ddns-server service
-      systemd:
-        name: kea-dhcp-ddns-server
-        state: started
-
-    - name: Wait 3 seconds for service to settle
-      pause:
-        seconds: 3
-
-    - name: Verify kea-dhcp-ddns-server is active
-      command: systemctl is-active kea-dhcp-ddns-server
-      register: process_status
-      changed_when: false
-      failed_when: process_status.stdout.strip() != "active"
+  include_tasks: tasks/start_and_check_service.yml
+  vars:
+    service_name: kea-dhcp-ddns-server
