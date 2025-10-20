@@ -5,7 +5,7 @@ dhcp4_renders:
   interfaces_config: |
     "interfaces": ["eth0"]
 
-  lease_database: | 
+  lease_database: |
     "type": "memfile",
     "persist": true,
     "name": "/var/lib/kea/dhcp4.leases"

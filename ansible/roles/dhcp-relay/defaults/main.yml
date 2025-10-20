@@ -1,6 +1,6 @@
 dhcp:
   server_ip: 0.0.0.0
-  
+
 dhcp_relay:
   interfaces: "eth1"
   options: ""

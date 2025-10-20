@@ -1,7 +1,7 @@
 - name: Restart kea-dhcp4-server service
-  systemd:
+  ansible.builtin.systemd:
     name: kea-dhcp4-server
-    enabled: yes
+    enabled: true
     state: restarted
   become: true
   listen: Restart kea-dhcp4-server service

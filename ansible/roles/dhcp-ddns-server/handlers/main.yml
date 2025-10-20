@@ -1,7 +1,7 @@
 - name: Restart kea-dhcp-ddns-server service
-  systemd:
+  ansible.builtin.systemd:
     name: kea-dhcp-ddns-server
-    enabled: yes
+    enabled: true
     state: restarted
   become: true
   listen: Restart kea-dhcp-ddns-server service

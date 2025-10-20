@@ -7,7 +7,7 @@
   ansible.builtin.file:
     path: /etc/netplan
     state: directory
-    mode: 0755
+    mode: '0755'
 
 - name: Verify netplan binary exists
   ansible.builtin.command: which netplan
@@ -16,11 +16,11 @@
   failed_when: netplan_bin.rc != 0
 
 - name: Put network config file
-  template:
+  ansible.builtin.template:
     src: 01-netconfig.yaml.j2
     dest: /etc/netplan/01-netconfig.yaml
     owner: root
     group: root
-    mode: 0644
+    mode: '0644'
   notify:
     - Apply network settings

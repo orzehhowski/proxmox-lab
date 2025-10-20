@@ -1,5 +1,5 @@
 - name: Set apt-proxy file
-  template:
+  ansible.builtin.template:
     src: 01proxy.j2
     dest: /etc/apt/apt.conf.d/01proxy
     owner: root

@@ -1,20 +1,20 @@
 - name: Install kea-dhcp4-server
-  apt:
+  ansible.builtin.apt:
     name: kea-dhcp4-server
     state: present
-    update_cache: yes
+    update_cache: true
 
 - name: Put dhcp4 config file
-  template:
+  ansible.builtin.template:
     src: kea-dhcp4.conf.j2
     dest: /etc/kea/kea-dhcp4.conf
     owner: root
     group: root
-    mode: 0644
+    mode: '0644'
   notify:
     - Restart kea-dhcp4-server service
 
 - name: Ensure the kea-dhcp4-server service is running
-  include_tasks: tasks/start_and_check_service.yml
+  ansible.builtin.include_tasks: tasks/start_and_check_service.yml
   vars:
     service_name: kea-dhcp4-server

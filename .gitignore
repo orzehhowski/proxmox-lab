@@ -47,3 +47,7 @@ terraform.rc
 # planout
 
 vault_password
+
+venv/
+
+.ansible/

@@ -1,7 +1,7 @@
 - name: Restart isc-dhcp-relay service
-  systemd:
+  ansible.builtin.systemd:
     name: isc-dhcp-relay
-    enabled: yes
+    enabled: true
     state: restarted
   become: true
   listen: Restart isc-dhcp-relay service

@@ -3,44 +3,45 @@
     name: net.ipv4.ip_forward
     value: '1'
     state: present
-    reload: yes
+    reload: true
 
 - name: Install iptables-persistent
-  apt:
+  ansible.builtin.apt:
     name: iptables-persistent
     state: present
-    update_cache: yes
+    update_cache: true
 
 - name: Generate iptables rules to temp file
-  template:
+  ansible.builtin.template:
     src: rules.v4.j2
     dest: /tmp/rules.v4.new
-  check_mode: no
+    mode: '0644'
+  check_mode: false
 
 - name: Save old iptables rules to temp file
-  ansible.builtin.shell: iptables-save | grep -vE '^(#|:.*\[)' > /tmp/rules.v4.old
+  ansible.builtin.shell: set -o pipefail && iptables-save | grep -vE '^(#|:.*\[)' > /tmp/rules.v4.old
   changed_when: false
 
 - name: Check if rules changed
-  command: diff /tmp/rules.v4.old /tmp/rules.v4.new
+  ansible.builtin.command: diff /tmp/rules.v4.old /tmp/rules.v4.new
   register: iptables_diff
   failed_when: iptables_diff.rc not in [0, 1]
   changed_when: iptables_diff.rc == 1
 
 - name: Copy new rules if differences exist
-  copy:
+  ansible.builtin.copy:
     src: /tmp/rules.v4.new
     remote_src: true
     dest: /etc/iptables/rules.v4
     owner: root
     group: root
-    mode: 0644
+    mode: '0644'
   when: iptables_diff.rc != 0
   notify:
     - Apply iptables rules
     - Save iptables rules
 
 - name: Ensure the netfilter-persistent service is running
-  include_tasks: tasks/start_and_check_service.yml
+  ansible.builtin.include_tasks: tasks/start_and_check_service.yml
   vars:
     service_name: netfilter-persistent

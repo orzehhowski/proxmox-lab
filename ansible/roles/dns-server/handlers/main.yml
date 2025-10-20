@@ -1,7 +1,7 @@
 - name: Restart named service
-  systemd:
+  ansible.builtin.systemd:
     name: named
-    enabled: yes
+    enabled: true
     state: restarted
   become: true
   listen: Restart named service

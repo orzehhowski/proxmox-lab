@@ -1,4 +1,4 @@
-ddns: 
+ddns:
   use: false
   key_name: dhcpupdate.
   key: secret
@@ -31,4 +31,3 @@ bind9_renders:
       file "/var/lib/bind/db.10";
       allow-update { key "{{ ddns.key_name }}"; };
     };
-

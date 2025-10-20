@@ -1,31 +1,31 @@
 - name: Install squid
-  apt:
+  ansible.builtin.apt:
     name: squid
     state: present
-    update_cache: yes
+    update_cache: true
 
 - name: Put squid config file
-  template:
+  ansible.builtin.template:
     src: squid.conf.j2
     dest: /etc/squid/squid.conf
     owner: root
     group: root
-    mode: 0644
+    mode: '0644'
   notify:
     - Restart squid service
 
 - name: Ensure log directory exists
-  file:
+  ansible.builtin.file:
     path: "{{ item | dirname }}"
     state: directory
     owner: proxy
     group: proxy
-    mode: 0755
+    mode: '0755'
   loop:
     - "{{ squid.logs.access_log }}"
     - "{{ squid.logs.cache_log }}"
 
 - name: Ensure the squid service is running
-  include_tasks: tasks/start_and_check_service.yml
+  ansible.builtin.include_tasks: tasks/start_and_check_service.yml
   vars:
     service_name: squid
