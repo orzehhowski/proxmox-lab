@@ -1,3 +1,8 @@
 dhcp:
   server_ip: 10.120.69.18
 apt_proxy_url: "http://10.120.69.5:3142"
+
+dns:
+  server_ip: 10.120.69.18
+  ns1: ns1.local.orzehhowski.pl
+  admin: root.local.orzehhowski.pl

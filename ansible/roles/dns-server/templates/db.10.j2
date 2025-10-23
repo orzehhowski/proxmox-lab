@@ -1,0 +1,9 @@
+$TTL	604800
+@	IN	SOA	{{ dns.ns1 }}. {{ dns.admin }}. (
+            2025102301  ; Serial (RR change identifier)
+            3600        ; Refresh (1 hour)
+            900         ; Retry (15 minutes)
+            604800      ; Expire (1 week)
+            86400 )     ; Minimum TTL (1 day)
+;
+	IN	NS	{{ dns.ns1 }}.

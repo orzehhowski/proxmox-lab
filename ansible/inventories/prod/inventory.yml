@@ -9,3 +9,6 @@ servers:
     lab_s03_dhcp_dns:
       ansible_host: 10.120.69.18
       ansible_user: root
+    lab_s04_rootca:
+      ansible_host: 10.120.69.18
+      ansible_user: root
