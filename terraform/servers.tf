@@ -1,9 +1,9 @@
 # These are machines in DMZ network subnet - 10.120.69.0/28
 
-resource "proxmox_lxc" "LAB-S03-DHCP_DNS" {
+resource "proxmox_lxc" "LAB-S03-DHCP-DNS" {
   vmid        = 102
   target_node = var.node
-  hostname = "LAB-S03-DHCP_DNS"
+  hostname = "LAB-S03-DHCP-DNS"
   ostemplate = "local:vztmpl/ubuntu-20.04-standard_20.04-1_amd64.tar.gz"
   ostype = "ubuntu"
   password = var.recovery_password
