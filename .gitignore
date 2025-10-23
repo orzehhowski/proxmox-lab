@@ -51,3 +51,5 @@ vault_password
 venv/
 
 .ansible/
+
+.venv/

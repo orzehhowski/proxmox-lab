@@ -20,6 +20,8 @@
 
 - name: Save old iptables rules to temp file
   ansible.builtin.shell: set -o pipefail && iptables-save | grep -vE '^(#|:.*\[)' > /tmp/rules.v4.old
+  args:
+    executable: /bin/bash
   changed_when: false
 
 - name: Check if rules changed

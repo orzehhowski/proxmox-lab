@@ -1,17 +1,20 @@
-- hosts: lab_s02_proxy
+- name: LAB-S02 configuration
+  hosts: lab_s02_proxy
   become: true
   roles:
     - netplan
     - proxy-server
 
-- hosts: lab_s01_fw
+- name: LAB-S01 configuration
+  hosts: lab_s01_fw
   become: true
   roles:
     - iptables
     - apt-proxy-client
     - dhcp-relay
 
-- hosts: lab_s03_dhcp_dns
+- name: LAB-S03 configuration
+  hosts: lab_s03_dhcp_dns
   become: true
   roles:
     - apt-proxy-client
