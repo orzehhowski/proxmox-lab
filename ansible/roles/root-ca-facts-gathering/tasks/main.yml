@@ -1,0 +1,8 @@
+- name: Record Root CA fingerprint
+  ansible.builtin.command: "openssl x509 -in {{ rootca.cert_path }} -fingerprint -noout"
+  register: ca_fingerprint
+  changed_when: false
+
+- name: Set Root CA fingerprint fact
+  ansible.builtin.set_fact:
+    root_ca_fingerprint: "{{ ca_fingerprint.stdout }}"

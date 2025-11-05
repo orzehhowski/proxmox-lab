@@ -1,0 +1,6 @@
+rootca:
+  private_key_path: "/etc/ssl/private/orzehhowskiCA.key.pem"
+  cert_path: "/etc/ssl/certs/orzehhowskiCA.cert.pem"
+  key_size: 4096
+  days_valid: 3650
+  common_name: "orzehhowski Root CA"

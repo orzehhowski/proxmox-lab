@@ -21,3 +21,16 @@
     - dhcp-server
     - dns-server
     - dhcp-ddns-server
+
+- name: LAB-S04 configuration
+  hosts: lab_s04_rootca
+  become: true
+  roles:
+    - apt-proxy-client
+    - root-ca
+
+- name: Gather LAB-S04 facts after configuration
+  hosts: lab_s04_rootca
+  become: true
+  roles:
+    - root-ca-facts-gathering

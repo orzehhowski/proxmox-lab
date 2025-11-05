@@ -1,0 +1,10 @@
+- name: Generate CA certificate
+  ansible.builtin.command: >
+    openssl req -x509 -new -nodes
+    -key {{ rootca.private_key_path }}
+    -sha256 -days {{ rootca.days_valid }}
+    -out {{ rootca.cert_path }}
+    -subj "/C=US/ST=Unknown/L=Unknown/O=Orzehhowski/CN={{ rootca.common_name }}"
+  register: ca_cert_result
+  changed_when: true
+  listen: Generate CA certificate

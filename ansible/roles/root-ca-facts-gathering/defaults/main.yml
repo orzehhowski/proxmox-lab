@@ -1,0 +1,2 @@
+rootca:
+  cert_path: "certs/orzehhowskiCA.cert.pem"
