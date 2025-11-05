@@ -6,3 +6,11 @@
 - name: Set Root CA fingerprint fact
   ansible.builtin.set_fact:
     root_ca_fingerprint: "{{ ca_fingerprint.stdout }}"
+  notify:
+    Save cert on ansible host
+
+- name: Save cert on ansible host
+  ansible.builtin.fetch:
+    src: "{{ rootca.cert_path }}"
+    dest: /tmp/pki/CA/certs/OrzehhowskiCA.crt.pem
+    flat: true

@@ -1,0 +1,13 @@
+- name: Check installed CA fingerprint
+  ansible.builtin.command: openssl x509 -in /usr/local/share/ca-certificates/OrzehhowskiCA.crt -fingerprint -noout
+  register: installed_ca_fp
+  ignore_errors: true
+  changed_when: false
+
+- name: Copy new root CA if fingerprint differs
+  ansible.builtin.copy:
+    src: /tmp/pki/CA/certs/OrzehhowskiCA.crt.pem
+    dest: /usr/local/share/ca-certificates/OrzehhowskiCA.crt
+    mode: "0755"
+  when: installed_ca_fp.stdout != hostvars['lab_s04_rootca'].root_ca_fingerprint
+  notify: Update trust
