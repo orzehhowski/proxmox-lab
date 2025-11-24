@@ -1,7 +1,7 @@
 - name: LAB-S02 configuration
   hosts: lab_s02_proxy
   become: true
-  tags: server_config
+  tags: server_config, lab_s02
   roles:
     - netplan
     - proxy-server
@@ -9,7 +9,7 @@
 - name: LAB-S01 configuration
   hosts: lab_s01_fw
   become: true
-  tags: server_config
+  tags: server_config, lab_s01
   roles:
     - iptables
     - apt-proxy-client
@@ -18,7 +18,7 @@
 - name: LAB-S03 configuration
   hosts: lab_s03_dhcp_dns
   become: true
-  tags: server_config
+  tags: server_config, lab_s03
   roles:
     - apt-proxy-client
     - dhcp-server
@@ -28,7 +28,7 @@
 - name: LAB-S04 configuration
   hosts: lab_s04_rootca
   become: true
-  tags: server_config
+  tags: server_config, lab_s04
   roles:
     - apt-proxy-client
     - root-ca
@@ -36,7 +36,7 @@
 - name: Gather LAB-S04 facts after configuration
   hosts: lab_s04_rootca
   become: true
-  tags: server_config
+  tags: server_config, lab_s04, client_config
   roles:
     - root-ca-facts-gathering
 
