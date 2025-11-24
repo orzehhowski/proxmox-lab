@@ -12,6 +12,10 @@ Terraform files are splitted basing on network segmentation (`dmz.tf`, `clients.
 
 Ansible tasks are ordered in roles, with main `/ansible/site.yml` file, inventory defined in `inventories` dir and secrets stored in ansible vault.
 
+`/scripts` directory contains scripts that run out of terraform or ansible scope.
+
+Packer is used for creating reusable QEMU VM templates
+
 ## current systems list
 
 #### Firewall - LAB-S01-FW
