@@ -38,7 +38,8 @@ qm set $VM_ID --scsi0 ${STORAGE_POOL}:vm-${VM_ID}-disk-0,discard=on,ssd=1
 
 # add Cloud-Init drive
 echo "Configuring Cloud-Init drive..."
-qm set $VM_ID --ide2 ${STORAGE_POOL}:cloudinit
+# do not attach cloudinit disk - terraform will do this later
+# qm set $VM_ID --ide2 ${STORAGE_POOL}:cloudinit
 qm set $VM_ID --boot c --bootdisk scsi0
 
 # convert the VM to a template
