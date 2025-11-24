@@ -31,3 +31,7 @@ Defined with `isc-dhcp4-server` and `bind9`. Also hosts local DDNS service assig
 #### Root CA - LAB-S04-RootCA
 
 Just RootCA simple as it is
+
+#### Apps host - LAB-S11-Apps
+
+It is QEMU VM that hosts Podman containers with internal apps (podman is just safer docker with identical cli anc OCI container format)
