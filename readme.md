@@ -1,6 +1,8 @@
 # Proxmox-lab
 
-My purpose is to simulate fully working small/medium enterprise network - to learn infrastructure things I might miss while doing my everyday chores and to dive deeper into ansible and terraform
+My purpose is to simulate fully working small/medium enterprise network - to learn infrastructure tweaks I might miss while doing my everyday chores and to dive deeper into ansible and terraform
+
+I do not use many of proxmox built-in features mainly beacuse I want to keep configuration in ansible and I'm focusing more on implementing stuff in linux instead of using seamless solutions that are offered by proxmox VE
 
 ## project structure
 
@@ -15,6 +17,8 @@ Ansible tasks are ordered in roles, with main `/ansible/site.yml` file, inventor
 `/scripts` directory contains scripts that run out of terraform or ansible scope.
 
 ## current systems list
+
+(For configuration insights visit `ansible/site.yml` and individual roles definitions)
 
 #### Firewall - LAB-S01-FW
 
@@ -32,6 +36,10 @@ Defined with `isc-dhcp4-server` and `bind9`. Also hosts local DDNS service assig
 
 Just RootCA simple as it is
 
-#### Apps host - LAB-S11-Apps
+#### Data - LAB-S05-Data
 
-It is QEMU VM that hosts Podman containers with internal apps (podman is just safer docker with identical cli anc OCI container format)
+NFS and SQL server.
+
+#### Apps hosts - LAB-S11-Apps and LAB-S12-Apps-HA
+
+These are QEMU VMs that hosts Docker containers with internal apps - in active-active or active-passive HA clusters - depending on app specifications
