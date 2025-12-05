@@ -1,2 +1,7 @@
 ddns:
   key: "{{ vault_ddns_key }}"
+
+nfs:
+  server_ip: 10.120.69.19
+
+recovery_password_hash: "{{ vault_recovery_password_hash }}"

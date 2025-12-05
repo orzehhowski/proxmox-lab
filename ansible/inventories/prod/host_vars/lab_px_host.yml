@@ -1,0 +1,6 @@
+proxmox:
+  user: ansible@pve
+  host: 10.120.69.3:8006
+  node: PL2000-LHY-002
+  token_id: config
+  token_secret: ada1f1b6-cbd0-499e-9a3f-e309da49a960

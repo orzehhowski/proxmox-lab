@@ -1,0 +1,196 @@
+---
+- name: Create Ubuntu Cloud-Init Template on Proxmox
+  hosts: lab_px_host
+  become: true
+  gather_facts: false
+
+  vars:
+    # Host specific vars - defined in host_vars
+    cloud_image_dir: "/var/lib/vz/template/iso"
+    snippet_dir: "/var/lib/vz/snippets"
+    vm_disks_dir: "/dev/zvol/TestDir"
+    recovery_password_hash: "invault"
+    proxmox:
+      user: ansible@pve
+      host: 10.120.69.3:8006
+      node: node_name
+      token_id: token_id
+      token_secret: secret
+
+    # VM specific vars - defined only here
+    vm_id: 9001
+    vm_name: "LAB-T02-Ubuntu"
+    memory: 2048
+    cores: 2
+    disk_size: "32G"
+    net_brigde: "vmbr5_LAN"
+    storage_pool: "TestDir"
+    local_storage_pool: "local"
+    ipconfig0: "ip=dhcp"
+    username: "ubuntu"
+    cloud_image_url: "https://cloud-images.ubuntu.com/noble/current/noble-server-cloudimg-amd64.img"
+    cloud_image_filename: "ubuntu-24.04-cloudimg-amd64.img"
+    cloud_image_path: "{{ cloud_image_dir }}/{{ cloud_image_filename }}"
+    cloudinit_snippet_filename: "userdata.yaml"
+    cloudinit_snippet_path: "{{ snippet_dir }}/{{ cloudinit_snippet_filename }}"
+    cloudinit_custom: |
+      #cloud-config
+        package_update: true
+        package_upgrade: true
+        package_reboot_if_required: true
+        packages:
+          - qemu-guest-agent
+
+        runcmd:
+          - systemctl enable --now qemu-guest-agent
+        users:
+          - name: {{ username }}
+            passwd: {{ recovery_password_hash }}
+            sudo: "ALL=(ALL) NOPASSWD:ALL"
+            groups: sudo
+            lock_passwd: false
+
+  tasks:
+    - name: Check if image already exists
+      ansible.builtin.stat:
+        path: "{{ cloud_image_path }}"
+      register: iso_stat
+
+    - name: Download Ubuntu ISO
+      ansible.builtin.get_url:
+        url: "{{ cloud_image_url }}"
+        dest: "{{ cloud_image_path }}"
+        mode: "0644"
+      when: not iso_stat.stat.exists
+
+    - name: Ensure VM is absent
+      community.proxmox.proxmox_kvm:
+        api_user: "{{ proxmox.user }}"
+        api_token_id: "{{ proxmox.token_id }}"
+        api_token_secret: "{{ proxmox.token_secret }}"
+        api_host: "{{ proxmox.host }}"
+        node: "{{ proxmox.node }}"
+        vmid: "{{ vm_id }}"
+        state: absent
+      delegate_to: localhost
+
+    # cloud-init config
+    - name: Ensure snippet directory exists
+      ansible.builtin.file:
+        path: "{{ snippet_dir }}"
+        state: directory
+        mode: "0755"
+
+    - name: Create cloud-init user-data snippet
+      ansible.builtin.copy:
+        dest: "{{ cloudinit_snippet_path }}"
+        mode: "0644"
+        content: "{{ cloudinit_custom }}"
+
+    - name: Create new VM
+      community.proxmox.proxmox_kvm:
+        api_user: "{{ proxmox.user }}"
+        api_token_id: "{{ proxmox.token_id }}"
+        api_token_secret: "{{ proxmox.token_secret }}"
+        api_host: "{{ proxmox.host }}"
+        node: "{{ proxmox.node }}"
+        validate_certs: false
+        vmid: "{{ vm_id }}"
+        name: "{{ vm_name }}"
+        memory: "{{ memory }}"
+        cores: "{{ cores }}"
+        scsihw: virtio-scsi-pci
+        net:
+          net0: "virtio,bridge={{ net_bridge }}"
+        ide:
+          ide2: "{{ storage_pool }}:cloudinit"
+        boot: "order=scsi0"
+        cicustom: "user={{ local_storage_pool }}:snippets/{{ cloudinit_snippet_filename }}"
+        ciuser: ubuntu
+        cipassword: ubuntu
+        ipconfig:
+          ipconfig0: "{{ ipconfig0 }}"
+        agent: 1
+        state: present
+      delegate_to: localhost
+
+    - name: Import cloud image using qm importdisk
+      ansible.builtin.command: >
+        qm importdisk {{ vm_id }}
+        {{ cloud_image_path }}
+        {{ storage_pool }}
+      args:
+        creates: "{{ vm_disks_dir }}/vm-{{ vm_id }}-disk-0"
+
+    # - name: Attach imported disk to VM
+    #   community.proxmox.proxmox_kvm:
+    #     api_user: "{{ proxmox.user }}"
+    #     api_password: "{{ proxmox.password }}"
+    #     api_host: "{{ proxmox.host }}"
+    #     node: "{{ proxmox.node }}"
+    #     validate_certs: false
+    #     vmid: "{{ vm_id }}"
+    #     update: true
+    #     scsi:
+    #       scsi0: "{{ storage_pool }}:vm-{{ vm_id }}-disk-0"
+    #   delegate_to: localhost
+
+    # version with community.proxmox doesn't work
+    - name: Attach imported disk to VM
+      ansible.builtin.command: >
+        qm set {{ vm_id }} --scsi0
+        {{ storage_pool }}:vm-{{ vm_id }}-disk-0,discard=on,ssd=1
+      changed_when: true
+
+    - name: Start VM
+      community.proxmox.proxmox_kvm:
+        api_user: "{{ proxmox.user }}"
+        api_token_id: "{{ proxmox.token_id }}"
+        api_token_secret: "{{ proxmox.token_secret }}"
+        api_host: "{{ proxmox.host }}"
+        node: "{{ proxmox.node }}"
+        vmid: "{{ vm_id }}"
+        state: started
+      delegate_to: localhost
+
+    - name: Wait for QEMU Guest Agent to become available
+      ansible.builtin.command: qm agent {{ vm_id }} ping
+      register: agent_ping
+      retries: 30
+      delay: 5
+      until: agent_ping.rc == 0
+      changed_when: true
+
+    - name: Wait for cloud-init to finish inside the VM
+      ansible.builtin.shell: |
+        qm guest exec {{ vm_id }} -- cloud-init status --wait
+      register: cloudinit_status
+      retries: 20
+      delay: 10
+      until: cloudinit_status.rc == 0
+      changed_when: true
+
+    - name: Stop VM gracefully
+      community.proxmox.proxmox_kvm:
+        api_user: "{{ proxmox.user }}"
+        api_token_id: "{{ proxmox.token_id }}"
+        api_token_secret: "{{ proxmox.token_secret }}"
+        api_host: "{{ proxmox.host }}"
+        node: "{{ proxmox.node }}"
+        vmid: "{{ vm_id }}"
+        state: stopped
+      retries: 10
+      delay: 10
+      delegate_to: localhost
+
+    - name: Convert VM to template
+      community.proxmox.proxmox_kvm:
+        api_user: "{{ proxmox.user }}"
+        api_token_id: "{{ proxmox.token_id }}"
+        api_token_secret: "{{ proxmox.token_secret }}"
+        api_host: "{{ proxmox.host }}"
+        node: "{{ proxmox.node }}"
+        vmid: "{{ vm_id }}"
+        state: template
+        force: true
+      delegate_to: localhost

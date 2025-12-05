@@ -12,9 +12,15 @@ The host machine is HP Proliant DL380 gen10, with system sitting on 2 mirrored 5
 
 Terraform files are splitted basing on network segmentation (`dmz.tf`, `clients.tf` etc.) and they contain definitions of VMs and containers in given segment. 
 
-Ansible tasks are ordered in roles, with main `/ansible/site.yml` file, inventory defined in `inventories` dir and secrets stored in ansible vault.
+Ansible tasks are ordered in roles, with main `/ansible/site.yml` file, inventory defined in `inventories` dir and secrets stored in ansible vault. All vault variables contain `vault_` prefix, which is removed in `/group_vars/all/main.yml`, so in this file you can find all vault variables required by the inventory. Full environment configuration can be started with:
 
-`/scripts` directory contains scripts that run out of terraform or ansible scope.
+`ansible-playbook -i ./inventories/prod/inventory.yml --vault-password-file ./vault_password site.yml`
+
+I decided to separate PX host specific ansible configuration from VMs/containers configs, so I put it in `/ansible/px-host-playbook.yml` - no roles, all config in one file. `Proxmoxer` python package is required in your local ansible environment for this playbook. You can run it with this command in `/ansible` dir (px host root password is required):
+
+`ansible-playbook --inventory ./inventories/prod/inventory.yml --vault-password-file ./vault_password --ask-become-pass px-host-playbook.yml`
+
+In order to run particular machine configuration, use tag with it's numer (e.g. `--tags lab-s01`). For details check `/ansible/site.yml`
 
 ## current systems list
 
@@ -42,4 +48,4 @@ NFS and SQL server.
 
 #### Apps hosts - LAB-S11-Apps and LAB-S12-Apps-HA
 
-These are QEMU VMs that hosts Docker containers with internal apps - in active-active or active-passive HA clusters - depending on app specifications
+These are QEMU Ubuntu VMs that hosts Docker containers with internal apps - in active-active or active-passive HA clusters - depending on app specifications

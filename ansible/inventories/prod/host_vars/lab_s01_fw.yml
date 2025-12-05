@@ -14,10 +14,15 @@ iptables_renders:
       -A FORWARD -s 10.120.69.0/24 -d 10.120.69.22/32 -o eth1 -p tcp -m tcp --dport 51515 -m comment --comment backup-server -j ACCEPT
       -A FORWARD -d 10.120.69.18/32 -o eth1 -p udp -m udp --dport 53 -m comment --comment DNS-UDP -j ACCEPT
       -A FORWARD -s 10.120.69.18/32 -i eth1 -o eth0 -p tcp -m tcp --dport 53 -m comment --comment DNS-RECURSION-TCP -j ACCEPT
+      -A FORWARD -s 10.120.69.18/32 -i eth1 -o eth0 -p udp -m udp --dport 53 -m comment --comment DNS-RECURSION-UDP -j ACCEPT
+      -A FORWARD -s 10.120.69.80/32 -d 10.120.69.19/22 -i eth5 -o eth1 -p tcp -m tcp --dport 2049 -m comment --comment Clients-2-NFS-data -j ACCEPT
+      -A FORWARD -s 10.120.69.80/32 -d 10.120.69.19/22 -i eth5 -o eth1 -p udp -m udp --dport 2049 -m comment --comment Clients-2-NFS-data -j ACCEPT
+      -A FORWARD -s 10.120.69.80/32 -d 10.120.69.19/22 -i eth5 -o eth1 -p udp -m udp --dport 111 -m comment --comment Clients-2-NFS-portmapper -j ACCEPT
+      -A FORWARD -s 10.120.69.80/32 -d 10.120.69.19/22 -i eth5 -o eth1 -p udp -m udp --dport 111 -m comment --comment Clients-2-NFS-portmapper -j ACCEPT
       -A FORWARD -s 10.120.69.32/28 -d 10.120.69.20/32 -i eth2 -o eth1 -p tcp -m tcp --dport 443 -m comment --comment MGMT-2-APPS-https -j ACCEPT
       -A FORWARD -s 10.120.69.32/28 -d 10.120.69.20/32 -i eth2 -o eth1 -p tcp -m tcp --dport 80 -m comment --comment MGMT-2-APPS-http -j ACCEPT
-      -A FORWARD -s 10.120.69.18/32 -i eth1 -o eth0 -p udp -m udp --dport 53 -m comment --comment DNS-RECURSION-UDP -j ACCEPT
       -A FORWARD -s 10.120.69.16/28 -i eth1 -o eth0 -p tcp -m multiport --dports 80,443 -m comment --comment "Servers-allow-http[s]" -j ACCEPT
+      -A FORWARD -s 10.120.69.80/28 -i eth5 -o eth0 -p tcp -m multiport --dports 80,443 -m comment --comment "Clients-allow-http[s]" -j ACCEPT
       -A FORWARD -d 10.120.69.34/32 -i eth0 -o eth2 -p tcp -m tcp --dport 3389 -m comment --comment RDP-2-MGMT -j ACCEPT
       -A FORWARD -s 10.120.69.34/32 -i eth2 -o eth0 -p tcp -m tcp --dport 443 -m comment --comment MGMT-allow-https -j ACCEPT
       -A FORWARD -s 10.120.69.34/32 -d 10.120.69.3/32 -i eth2 -o eth0 -p tcp -m tcp --dport 8006 -m comment --comment MGMT-2-PROXMOXVE -j ACCEPT
